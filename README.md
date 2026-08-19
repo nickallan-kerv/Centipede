@@ -337,6 +337,16 @@ Initial placeholder:
 4. Start with the Core Gameplay Vertical Slice Epic.
 5. Track learnings weekly and prepare Frontier Data Club summary deck.
 
+## 21. Workflow Progress So Far
+- Created and published the `nickallan-kerv/Centipede` repository with project documentation and automation scripts.
+- Established the SDD issue model: initiative, epics, stories, decision records, and learning logs.
+- Imported and organized the initial backlog (31 issues) with labels, milestones, and project board linkage.
+- Configured project views for execution (`Execution Board`, `Milestone Focus`, and `Area Focus`).
+- Activated first sprint items, implemented the vertical slice for loop/movement/firing, and closed issues #11, #13, and #14 with acceptance evidence.
+
+### First Sprint Kanban Board
+![First Sprint Kanban Board](docs/1stSprintBoardScreenshot.png)
+
 ## Appendix: Backlog Import Automation
 This repository includes a GitHub CLI automation script to create labels, milestones, and the initial issue backlog.
 
