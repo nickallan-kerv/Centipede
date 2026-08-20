@@ -33,6 +33,30 @@ export class ProjectileSystem {
     return true;
   }
 
+  consumeHits(rect) {
+    if (!rect) {
+      return 0;
+    }
+
+    let hits = 0;
+    this.projectiles = this.projectiles.filter((p) => {
+      const intersects =
+        p.x < rect.x + rect.width &&
+        p.x + p.width > rect.x &&
+        p.y < rect.y + rect.height &&
+        p.y + p.height > rect.y;
+
+      if (intersects) {
+        hits += 1;
+        return false;
+      }
+
+      return true;
+    });
+
+    return hits;
+  }
+
   draw(ctx) {
     ctx.fillStyle = "#fbbf24";
     for (const p of this.projectiles) {
