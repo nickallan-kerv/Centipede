@@ -2,7 +2,8 @@ export class ProjectileSystem {
   constructor(fieldHeight) {
     this.projectiles = [];
     this.speed = 520;
-    this.fireCooldownSeconds = 0.17;
+    this.defaultFireCooldownSeconds = 0.17;
+    this.fireCooldownSeconds = this.defaultFireCooldownSeconds;
     this.cooldownRemaining = 0;
     this.fieldHeight = fieldHeight;
   }
@@ -31,6 +32,17 @@ export class ProjectileSystem {
 
     this.cooldownRemaining = this.fireCooldownSeconds;
     return true;
+  }
+
+  setFireCooldown(seconds) {
+    this.fireCooldownSeconds = Math.max(0.05, seconds);
+    this.cooldownRemaining = Math.min(this.cooldownRemaining, this.fireCooldownSeconds);
+  }
+
+  reset() {
+    this.projectiles = [];
+    this.cooldownRemaining = 0;
+    this.fireCooldownSeconds = this.defaultFireCooldownSeconds;
   }
 
   consumeHits(rect) {
