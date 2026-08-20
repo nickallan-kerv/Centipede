@@ -375,6 +375,13 @@ Initial placeholder:
 - ISSUE-502 implemented: [Game-Over and Restart Flow](docs/sprints/sprint-3/ISSUE-502-game-over-and-restart-flow.md)
 - ISSUE-503 implemented: [Level Progression and Difficulty Scaling Rules](docs/sprints/sprint-3/ISSUE-503-level-progression-and-scaling-rules.md)
 
+#### Sprint 4
+Board snapshot target path: `docs/Sprint4Board.png` (capture pending)
+
+##### Outcomes
+- ISSUE-601 implemented: [Unit Test Suite Foundation](docs/sprints/sprint-4/ISSUE-601-unit-test-suite-foundation.md)
+- ISSUE-32 implemented: [SOLID Refactor: Game Update Architecture](docs/sprints/sprint-4/ISSUE-32-solid-refactor-game-update-architecture.md)
+
 ## Appendix: Backlog Import Automation
 This repository includes a GitHub CLI automation script to create labels, milestones, and the initial issue backlog.
 
