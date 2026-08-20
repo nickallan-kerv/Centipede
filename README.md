@@ -343,9 +343,22 @@ Initial placeholder:
 - Imported and organized the initial backlog (31 issues) with labels, milestones, and project board linkage.
 - Configured project views for execution (`Execution Board`, `Milestone Focus`, and `Area Focus`).
 - Activated first sprint items, implemented the vertical slice for loop/movement/firing, and closed issues #11, #13, and #14 with acceptance evidence.
+- Completed Sprint 2 governance/reporting artifacts to support repeatable SDD workflow communication.
 
-### First Sprint Kanban Board
-![First Sprint Kanban Board](docs/1stSprintBoardScreenshot.png)
+### Sprint 2 Outcomes
+- ISSUE-801 decision captured: [Rendering and Game-Loop Architecture](docs/sprints/sprint-2/ISSUE-801-rendering-and-game-loop-decision.md)
+- ISSUE-802 decision captured: [Test Tooling and Quality Gates](docs/sprints/sprint-2/ISSUE-802-test-tooling-and-quality-gates-decision.md)
+- ISSUE-803 decision captured: [Scope Boundary for v1 Gameplay Parity](docs/sprints/sprint-2/ISSUE-803-v1-gameplay-parity-scope-boundary-decision.md)
+- ISSUE-701 metrics model finalized: [SDD Effectiveness Metrics](docs/sprints/sprint-2/ISSUE-701-sdd-metrics-model.md)
+- ISSUE-702 findings report drafted: [Frontier Data Club Findings Report](docs/sprints/sprint-2/ISSUE-702-frontier-data-club-findings-report.md)
+- ISSUE-901 learning log completed: [Week 1 SDD Setup Reflections](docs/sprints/sprint-2/ISSUE-901-week-1-learning-log.md)
+
+### Sprints
+#### Sprint 1
+![Sprint 1 Kanban Board](docs/Sprint1Board.png)
+
+#### Sprint 2
+![Sprint 2 Kanban Board for Frontier Data Club Workflow Demonstration](docs/Sprint2Board.png)
 
 ## Appendix: Backlog Import Automation
 This repository includes a GitHub CLI automation script to create labels, milestones, and the initial issue backlog.
