@@ -343,6 +343,7 @@ Initial placeholder:
 - Imported and organized the initial backlog (31 issues) with labels, milestones, and project board linkage.
 - Configured project views for execution (`Execution Board`, `Milestone Focus`, and `Area Focus`).
 - Activated first sprint items, implemented the vertical slice for loop/movement/firing, and closed issues #11, #13, and #14 with acceptance evidence.
+- Extended the gameplay slice with authoritative HUD state for score and lives, including live score updates and collision-driven life loss behavior for issue #19.
 - Completed Sprint 2 governance/reporting artifacts to support repeatable SDD workflow communication.
 
 ### Sprint 2 Outcomes
