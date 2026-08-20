@@ -347,7 +347,19 @@ Initial placeholder:
 - Implemented Sprint 3 gameplay stories for collision outcomes (#15), game-over and restart flow (#20), and level progression with explicit scaling rules (#21).
 - Completed Sprint 2 governance/reporting artifacts to support repeatable SDD workflow communication.
 
-### Sprint 2 Outcomes
+### Sprints
+#### Sprint 1
+![Sprint 1 Kanban Board](docs/Sprint1Board.png)
+
+##### Outcomes
+- ISSUE-201 implemented: game field renders in browser and the requestAnimationFrame update/render loop runs continuously with delta-time clamping. See [Render Game Field and Main Loop](docs/sprints/sprint-1/ISSUE-201-render-game-field-and-main-loop.md).
+- ISSUE-301 implemented: keyboard movement supports Arrow keys and WASD with enforced player movement boundaries. See [Player Movement Constraints](docs/sprints/sprint-1/ISSUE-301-player-movement-constraints.md).
+- ISSUE-302 implemented: firing spawns projectiles with fire-rate limiting and projectile lifecycle cleanup out of bounds. See [Firing and Projectile Lifecycle](docs/sprints/sprint-1/ISSUE-302-firing-and-projectile-lifecycle.md).
+
+#### Sprint 2
+![Sprint 2 Kanban Board for Frontier Data Club Workflow Demonstration](docs/Sprint2Board.png)
+
+##### Outcomes
 - ISSUE-801 decision captured: [Rendering and Game-Loop Architecture](docs/sprints/sprint-2/ISSUE-801-rendering-and-game-loop-decision.md)
 - ISSUE-802 decision captured: [Test Tooling and Quality Gates](docs/sprints/sprint-2/ISSUE-802-test-tooling-and-quality-gates-decision.md)
 - ISSUE-803 decision captured: [Scope Boundary for v1 Gameplay Parity](docs/sprints/sprint-2/ISSUE-803-v1-gameplay-parity-scope-boundary-decision.md)
@@ -355,20 +367,13 @@ Initial placeholder:
 - ISSUE-702 findings report drafted: [Frontier Data Club Findings Report](docs/sprints/sprint-2/ISSUE-702-frontier-data-club-findings-report.md)
 - ISSUE-901 learning log completed: [Week 1 SDD Setup Reflections](docs/sprints/sprint-2/ISSUE-901-week-1-learning-log.md)
 
-### Sprint 3 Outcomes
-- ISSUE-303 implemented in runtime: projectile-enemy and player-enemy collision outcomes update authoritative game state without same-frame duplicate collision processing.
-- ISSUE-502 implemented in runtime: game-over triggers at zero lives and restart is available with `R` without browser refresh.
-- ISSUE-503 implemented and documented: score-threshold level progression and difficulty scaling rules documented in [Level Progression and Difficulty Scaling Rules](docs/sprints/sprint-3/ISSUE-503-level-progression-and-scaling-rules.md).
-
-### Sprints
-#### Sprint 1
-![Sprint 1 Kanban Board](docs/Sprint1Board.png)
-
-#### Sprint 2
-![Sprint 2 Kanban Board for Frontier Data Club Workflow Demonstration](docs/Sprint2Board.png)
-
 #### Sprint 3
 ![Sprint 3 Kanban Board](docs/Sprint3Board.png)
+
+##### Outcomes
+- ISSUE-303 implemented in runtime: projectile-enemy and player-enemy collision outcomes update authoritative game state without same-frame duplicate collision processing. See [Collision System Implementation](docs/sprints/sprint-3/ISSUE-303-collision-system-implementation.md).
+- ISSUE-502 implemented in runtime: game-over triggers at zero lives and restart is available with `R` without browser refresh. See [Game-Over and Restart Flow](docs/sprints/sprint-3/ISSUE-502-game-over-and-restart-flow.md).
+- ISSUE-503 implemented and documented: score-threshold level progression and difficulty scaling rules documented in [Level Progression and Difficulty Scaling Rules](docs/sprints/sprint-3/ISSUE-503-level-progression-and-scaling-rules.md).
 
 ## Appendix: Backlog Import Automation
 This repository includes a GitHub CLI automation script to create labels, milestones, and the initial issue backlog.
