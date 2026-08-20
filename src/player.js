@@ -11,6 +11,9 @@ export class Player {
 
     this.x = fieldWidth / 2 - this.width / 2;
     this.y = fieldHeight - this.height - 16;
+
+    this.startX = this.x;
+    this.startY = this.y;
   }
 
   update(dt, input) {
@@ -48,6 +51,20 @@ export class Player {
       x: this.x + this.width / 2,
       y: this.y
     };
+  }
+
+  getBounds() {
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height
+    };
+  }
+
+  resetPosition() {
+    this.x = this.startX;
+    this.y = this.startY;
   }
 
   draw(ctx) {
