@@ -346,6 +346,7 @@ Initial placeholder:
 - Extended the gameplay slice with authoritative HUD state for score and lives, including live score updates and collision-driven life loss behavior for issue #19.
 - Implemented Sprint 3 gameplay stories for collision outcomes (#15), game-over and restart flow (#20), and level progression with explicit scaling rules (#21).
 - Completed Sprint 2 governance/reporting artifacts to support repeatable SDD workflow communication.
+- Implemented Sprint 5 gameplay expansion for segmented centipede movement behavior (issue #16) with deterministic module tests and sprint evidence.
 
 ### Sprints
 #### Sprint 1
@@ -379,6 +380,12 @@ Initial placeholder:
 ##### Outcomes
 - ISSUE-601 implemented: [Unit Test Suite Foundation](docs/sprints/sprint-4/ISSUE-601-unit-test-suite-foundation.md)
 - ISSUE-32 implemented: [SOLID Refactor: Game Update Architecture](docs/sprints/sprint-4/ISSUE-32-solid-refactor-game-update-architecture.md)
+
+#### Sprint 5
+![Sprint Planning in Plan Mode](docs/Sprint Planning in Plan Mode.png)
+
+##### Outcomes
+- ISSUE-401 implemented: [Centipede Segmented Movement Behavior](docs/sprints/sprint-5/ISSUE-401-centipede-segmented-movement-behavior.md)
 
 ## Appendix: Backlog Import Automation
 This repository includes a GitHub CLI automation script to create labels, milestones, and the initial issue backlog.
