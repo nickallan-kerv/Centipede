@@ -1,6 +1,14 @@
 import { InputController } from "./input.js";
 import { Player } from "./player.js";
 import { ProjectileSystem } from "./projectiles.js";
+import {
+  applyPlayerHit,
+  applyProjectileHits,
+  createGameState,
+  getDifficultyForLevel,
+  resetGameState
+} from "./game-rules.js";
+import { createEnemyForLevel } from "./enemy-system.js";
 
 export class Game {
   constructor(canvas) {
@@ -22,14 +30,14 @@ export class Game {
     this.elapsedSeconds = 0;
     this.shotsFired = 0;
 
-    this.score = 0;
-    this.lives = 3;
-    this.maxLives = 3;
-    this.isGameOver = false;
-
-    this.level = 1;
-    this.pointsPerLevel = 1000;
-    this.enemyDefeatRespawnDelaySeconds = 0.28;
+    const initialState = createGameState(3, 1000);
+    this.score = initialState.score;
+    this.lives = initialState.lives;
+    this.maxLives = initialState.maxLives;
+    this.isGameOver = initialState.isGameOver;
+    this.level = initialState.level;
+    this.pointsPerLevel = initialState.pointsPerLevel;
+    this.enemyDefeatRespawnDelaySeconds = getDifficultyForLevel(this.level).enemyDefeatRespawnDelay;
 
     this.enemy = this.createEnemy();
     this.enemyRespawnDelaySeconds = 0;
@@ -39,16 +47,7 @@ export class Game {
   }
 
   createEnemy() {
-    const speedScale = 1 + (this.level - 1) * 0.18;
-    const minSpeed = 120 * speedScale;
-    const maxSpeed = 180 * speedScale;
-    return {
-      width: 26,
-      height: 18,
-      x: Math.random() * (this.fieldWidth - 26),
-      y: -20,
-      speed: minSpeed + Math.random() * (maxSpeed - minSpeed)
-    };
+    return createEnemyForLevel(this.fieldWidth, this.level);
   }
 
   intersects(a, b) {
@@ -69,13 +68,13 @@ export class Game {
   }
 
   applyDifficultyForLevel() {
-    const cooldown = Math.max(0.09, 0.17 - (this.level - 1) * 0.01);
-    this.projectiles.setFireCooldown(cooldown);
-    this.enemyDefeatRespawnDelaySeconds = Math.max(0.12, 0.28 - (this.level - 1) * 0.015);
+    const difficulty = getDifficultyForLevel(this.level);
+    this.projectiles.setFireCooldown(difficulty.projectileCooldown);
+    this.enemyDefeatRespawnDelaySeconds = difficulty.enemyDefeatRespawnDelay;
   }
 
   updateLevelProgression() {
-    const nextLevel = this.getLevelFromScore(this.score);
+    const nextLevel = 1 + Math.floor(this.score / this.pointsPerLevel);
     if (nextLevel !== this.level) {
       this.level = nextLevel;
       this.applyDifficultyForLevel();
@@ -83,14 +82,23 @@ export class Game {
   }
 
   resetGame() {
+    const resetState = resetGameState({
+      score: this.score,
+      lives: this.lives,
+      maxLives: this.maxLives,
+      isGameOver: this.isGameOver,
+      level: this.level,
+      pointsPerLevel: this.pointsPerLevel
+    });
+
     this.isPaused = false;
-    this.isGameOver = false;
+    this.isGameOver = resetState.isGameOver;
     this.elapsedSeconds = 0;
     this.shotsFired = 0;
 
-    this.score = 0;
-    this.lives = this.maxLives;
-    this.level = 1;
+    this.score = resetState.score;
+    this.lives = resetState.lives;
+    this.level = resetState.level;
 
     this.playerHitInvulnerabilitySeconds = 0;
     this.enemyRespawnDelaySeconds = 0;
@@ -160,8 +168,21 @@ export class Game {
 
       const projectileHits = this.projectiles.consumeHits(this.enemy);
       if (projectileHits > 0) {
-        this.score += projectileHits * 100;
-        this.updateLevelProgression();
+        const state = applyProjectileHits(
+          {
+            score: this.score,
+            lives: this.lives,
+            maxLives: this.maxLives,
+            isGameOver: this.isGameOver,
+            level: this.level,
+            pointsPerLevel: this.pointsPerLevel
+          },
+          projectileHits,
+          100
+        );
+        this.score = state.score;
+        this.level = state.level;
+        this.applyDifficultyForLevel();
         this.enemy = null;
         this.enemyRespawnDelaySeconds = this.enemyDefeatRespawnDelaySeconds;
       }
@@ -171,15 +192,20 @@ export class Game {
         this.playerHitInvulnerabilitySeconds === 0 &&
         this.intersects(this.player.getBounds(), this.enemy)
       ) {
-        this.lives = Math.max(0, this.lives - 1);
+        const state = applyPlayerHit({
+          score: this.score,
+          lives: this.lives,
+          maxLives: this.maxLives,
+          isGameOver: this.isGameOver,
+          level: this.level,
+          pointsPerLevel: this.pointsPerLevel
+        });
+        this.lives = state.lives;
+        this.isGameOver = state.isGameOver;
         this.player.resetPosition();
         this.playerHitInvulnerabilitySeconds = 1.0;
         this.enemyRespawnDelaySeconds = 0.75;
         this.enemy = null;
-
-        if (this.lives === 0) {
-          this.isGameOver = true;
-        }
       }
     }
 
