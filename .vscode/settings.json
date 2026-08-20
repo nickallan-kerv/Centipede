@@ -6,5 +6,8 @@
     "titleBar.activeForeground": "#ffffff",
     "statusBar.background": "#0b5f3a",
     "statusBar.foreground": "#ffffff"
+  },
+  "workbench.editorAssociations": {
+    "*.md": "vscode.markdown.preview.editor"
   }
 }
