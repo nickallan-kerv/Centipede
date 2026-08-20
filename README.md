@@ -349,9 +349,7 @@ Initial placeholder:
 
 ### Sprints
 #### Sprint 1
-![Sprint 1 Kanban Board](docs/Sprint1Board.png)
 
-##### Outcomes
 - ISSUE-201 implemented: [Render Game Field and Main Loop](docs/sprints/sprint-1/ISSUE-201-render-game-field-and-main-loop.md)
 - ISSUE-301 implemented: [Player Movement Constraints](docs/sprints/sprint-1/ISSUE-301-player-movement-constraints.md)
 - ISSUE-302 implemented: [Firing and Projectile Lifecycle](docs/sprints/sprint-1/ISSUE-302-firing-and-projectile-lifecycle.md)
@@ -376,7 +374,7 @@ Initial placeholder:
 - ISSUE-503 implemented: [Level Progression and Difficulty Scaling Rules](docs/sprints/sprint-3/ISSUE-503-level-progression-and-scaling-rules.md)
 
 #### Sprint 4
-Board snapshot target path: `docs/Sprint4Board.png` (capture pending)
+![Sprint 4 Kanban Board](docs/Sprint4Board.png)
 
 ##### Outcomes
 - ISSUE-601 implemented: [Unit Test Suite Foundation](docs/sprints/sprint-4/ISSUE-601-unit-test-suite-foundation.md)
