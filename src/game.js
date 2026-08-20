@@ -27,18 +27,27 @@ export class Game {
     this.maxLives = 3;
     this.isGameOver = false;
 
+    this.level = 1;
+    this.pointsPerLevel = 1000;
+    this.enemyDefeatRespawnDelaySeconds = 0.28;
+
     this.enemy = this.createEnemy();
     this.enemyRespawnDelaySeconds = 0;
     this.playerHitInvulnerabilitySeconds = 0;
+
+    this.applyDifficultyForLevel();
   }
 
   createEnemy() {
+    const speedScale = 1 + (this.level - 1) * 0.18;
+    const minSpeed = 120 * speedScale;
+    const maxSpeed = 180 * speedScale;
     return {
       width: 26,
       height: 18,
       x: Math.random() * (this.fieldWidth - 26),
       y: -20,
-      speed: 120 + Math.random() * 60
+      speed: minSpeed + Math.random() * (maxSpeed - minSpeed)
     };
   }
 
@@ -55,6 +64,43 @@ export class Game {
     this.enemy = this.createEnemy();
   }
 
+  getLevelFromScore(score) {
+    return 1 + Math.floor(score / this.pointsPerLevel);
+  }
+
+  applyDifficultyForLevel() {
+    const cooldown = Math.max(0.09, 0.17 - (this.level - 1) * 0.01);
+    this.projectiles.setFireCooldown(cooldown);
+    this.enemyDefeatRespawnDelaySeconds = Math.max(0.12, 0.28 - (this.level - 1) * 0.015);
+  }
+
+  updateLevelProgression() {
+    const nextLevel = this.getLevelFromScore(this.score);
+    if (nextLevel !== this.level) {
+      this.level = nextLevel;
+      this.applyDifficultyForLevel();
+    }
+  }
+
+  resetGame() {
+    this.isPaused = false;
+    this.isGameOver = false;
+    this.elapsedSeconds = 0;
+    this.shotsFired = 0;
+
+    this.score = 0;
+    this.lives = this.maxLives;
+    this.level = 1;
+
+    this.playerHitInvulnerabilitySeconds = 0;
+    this.enemyRespawnDelaySeconds = 0;
+    this.player.resetPosition();
+    this.projectiles.reset();
+
+    this.applyDifficultyForLevel();
+    this.resetEnemy();
+  }
+
   togglePause() {
     if (this.isGameOver) {
       return;
@@ -63,6 +109,12 @@ export class Game {
   }
 
   update(dt) {
+    if (this.isGameOver && this.input.consumePressed("KeyR")) {
+      this.resetGame();
+      this.input.endFrame();
+      return;
+    }
+
     if (this.input.consumePressed("KeyP")) {
       this.togglePause();
     }
@@ -91,25 +143,34 @@ export class Game {
     }
 
     this.projectiles.update(dt);
+    this.updateLevelProgression();
 
     if (this.enemyRespawnDelaySeconds > 0) {
       this.enemyRespawnDelaySeconds = Math.max(0, this.enemyRespawnDelaySeconds - dt);
       if (this.enemyRespawnDelaySeconds === 0) {
         this.resetEnemy();
       }
-    } else {
+    } else if (this.enemy) {
       this.enemy.y += this.enemy.speed * dt;
       if (this.enemy.y > this.fieldHeight + 20) {
         this.resetEnemy();
+        this.input.endFrame();
+        return;
       }
 
       const projectileHits = this.projectiles.consumeHits(this.enemy);
       if (projectileHits > 0) {
         this.score += projectileHits * 100;
-        this.resetEnemy();
+        this.updateLevelProgression();
+        this.enemy = null;
+        this.enemyRespawnDelaySeconds = this.enemyDefeatRespawnDelaySeconds;
       }
 
-      if (this.playerHitInvulnerabilitySeconds === 0 && this.intersects(this.player.getBounds(), this.enemy)) {
+      if (
+        this.enemy &&
+        this.playerHitInvulnerabilitySeconds === 0 &&
+        this.intersects(this.player.getBounds(), this.enemy)
+      ) {
         this.lives = Math.max(0, this.lives - 1);
         this.player.resetPosition();
         this.playerHitInvulnerabilitySeconds = 1.0;
@@ -165,17 +226,19 @@ export class Game {
     ctx.fillText(`Time: ${this.elapsedSeconds.toFixed(1)}s`, 12, 24);
     ctx.fillText(`Score: ${this.score}`, 12, 46);
     ctx.fillText(`Lives: ${this.lives}/${this.maxLives}`, 12, 68);
-    ctx.fillText(`Projectiles: ${this.projectiles.count()}`, 12, 90);
-    ctx.fillText(`Shots Fired: ${this.shotsFired}`, 12, 112);
+    ctx.fillText(`Level: ${this.level}`, 12, 90);
+    ctx.fillText(`Next Level: ${this.pointsPerLevel * this.level}`, 12, 112);
+    ctx.fillText(`Projectiles: ${this.projectiles.count()}`, 12, 134);
+    ctx.fillText(`Shots Fired: ${this.shotsFired}`, 12, 156);
 
     ctx.fillStyle = this.isPaused ? "#fbbf24" : "#34d399";
     if (this.isGameOver) {
       ctx.fillStyle = "#f87171";
-      ctx.fillText("Status: Game Over", 12, 134);
+      ctx.fillText("Status: Game Over", 12, 178);
       return;
     }
 
-    ctx.fillText(this.isPaused ? "Status: Paused" : "Status: Running", 12, 134);
+    ctx.fillText(this.isPaused ? "Status: Paused" : "Status: Running", 12, 178);
   }
 
   drawEnemy(ctx) {
@@ -218,6 +281,7 @@ export class Game {
     ctx.fillStyle = "#dbe6f5";
     ctx.font = "18px Segoe UI, sans-serif";
     ctx.fillText(`Final Score: ${this.score}`, this.fieldWidth / 2, this.fieldHeight / 2 + 20);
+    ctx.fillText("Press R to restart", this.fieldWidth / 2, this.fieldHeight / 2 + 48);
     ctx.textAlign = "left";
   }
 }
