@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+        "name": "Launch Integrated Browser",
+        "request": "launch",
+        "type": "editor-browser",
+        "url": "http://localhost:8080",
+        "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve-centipede",
+      "postDebugTask": "stop-centipede-server"
+    },
+    {
+      "name": "Centipede: Launch in Edge",
+      "type": "msedge",
+      "request": "launch",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve-centipede",
+      "postDebugTask": "stop-centipede-server"
+    },
+    {
+      "name": "Centipede: Launch in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "serve-centipede",
+      "postDebugTask": "stop-centipede-server"
+    }
+  ]
+}
