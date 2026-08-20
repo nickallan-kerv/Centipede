@@ -1,0 +1,26 @@
+{
+  "name": "centipede",
+  "version": "1.0.0",
+  "description": "This repository is a learning and demonstration project focused on building a browser-based version of the classic arcade game **Centipede** while practicing **Spec-Driven Development (SDD)**.",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickallan-kerv/Centipede.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/nickallan-kerv/Centipede/issues"
+  },
+  "homepage": "https://github.com/nickallan-kerv/Centipede#readme",
+  "devDependencies": {
+    "vitest": "^4.1.11"
+  }
+}
