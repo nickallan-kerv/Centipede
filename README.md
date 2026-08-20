@@ -352,9 +352,9 @@ Initial placeholder:
 ![Sprint 1 Kanban Board](docs/Sprint1Board.png)
 
 ##### Outcomes
-- ISSUE-201 implemented: game field renders in browser and the requestAnimationFrame update/render loop runs continuously with delta-time clamping. See [Render Game Field and Main Loop](docs/sprints/sprint-1/ISSUE-201-render-game-field-and-main-loop.md).
-- ISSUE-301 implemented: keyboard movement supports Arrow keys and WASD with enforced player movement boundaries. See [Player Movement Constraints](docs/sprints/sprint-1/ISSUE-301-player-movement-constraints.md).
-- ISSUE-302 implemented: firing spawns projectiles with fire-rate limiting and projectile lifecycle cleanup out of bounds. See [Firing and Projectile Lifecycle](docs/sprints/sprint-1/ISSUE-302-firing-and-projectile-lifecycle.md).
+- ISSUE-201 implemented: [Render Game Field and Main Loop](docs/sprints/sprint-1/ISSUE-201-render-game-field-and-main-loop.md)
+- ISSUE-301 implemented: [Player Movement Constraints](docs/sprints/sprint-1/ISSUE-301-player-movement-constraints.md)
+- ISSUE-302 implemented: [Firing and Projectile Lifecycle](docs/sprints/sprint-1/ISSUE-302-firing-and-projectile-lifecycle.md)
 
 #### Sprint 2
 ![Sprint 2 Kanban Board for Frontier Data Club Workflow Demonstration](docs/Sprint2Board.png)
@@ -371,9 +371,9 @@ Initial placeholder:
 ![Sprint 3 Kanban Board](docs/Sprint3Board.png)
 
 ##### Outcomes
-- ISSUE-303 implemented in runtime: projectile-enemy and player-enemy collision outcomes update authoritative game state without same-frame duplicate collision processing. See [Collision System Implementation](docs/sprints/sprint-3/ISSUE-303-collision-system-implementation.md).
-- ISSUE-502 implemented in runtime: game-over triggers at zero lives and restart is available with `R` without browser refresh. See [Game-Over and Restart Flow](docs/sprints/sprint-3/ISSUE-502-game-over-and-restart-flow.md).
-- ISSUE-503 implemented and documented: score-threshold level progression and difficulty scaling rules documented in [Level Progression and Difficulty Scaling Rules](docs/sprints/sprint-3/ISSUE-503-level-progression-and-scaling-rules.md).
+- ISSUE-303 implemented: [Collision System Implementation](docs/sprints/sprint-3/ISSUE-303-collision-system-implementation.md)
+- ISSUE-502 implemented: [Game-Over and Restart Flow](docs/sprints/sprint-3/ISSUE-502-game-over-and-restart-flow.md)
+- ISSUE-503 implemented: [Level Progression and Difficulty Scaling Rules](docs/sprints/sprint-3/ISSUE-503-level-progression-and-scaling-rules.md)
 
 ## Appendix: Backlog Import Automation
 This repository includes a GitHub CLI automation script to create labels, milestones, and the initial issue backlog.
