@@ -8,7 +8,12 @@ import {
   getDifficultyForLevel,
   resetGameState
 } from "./game-rules.js";
-import { createEnemyForLevel } from "./enemy-system.js";
+import {
+  consumeSegmentHits,
+  createCentipedeForLevel,
+  intersectsCentipede,
+  updateCentipede
+} from "./centipede-system.js";
 
 export class Game {
   constructor(canvas) {
@@ -39,28 +44,20 @@ export class Game {
     this.pointsPerLevel = initialState.pointsPerLevel;
     this.enemyDefeatRespawnDelaySeconds = getDifficultyForLevel(this.level).enemyDefeatRespawnDelay;
 
-    this.enemy = this.createEnemy();
-    this.enemyRespawnDelaySeconds = 0;
+    this.centipede = this.createCentipede();
+    this.centipedeRespawnDelaySeconds = 0;
     this.playerHitInvulnerabilitySeconds = 0;
 
     this.applyDifficultyForLevel();
   }
 
-  createEnemy() {
-    return createEnemyForLevel(this.fieldWidth, this.level);
+  createCentipede() {
+    const segmentCount = Math.min(16, 8 + this.level);
+    return createCentipedeForLevel(this.fieldWidth, this.level, Math.random, segmentCount);
   }
 
-  intersects(a, b) {
-    return (
-      a.x < b.x + b.width &&
-      a.x + a.width > b.x &&
-      a.y < b.y + b.height &&
-      a.y + a.height > b.y
-    );
-  }
-
-  resetEnemy() {
-    this.enemy = this.createEnemy();
+  resetCentipede() {
+    this.centipede = this.createCentipede();
   }
 
   getLevelFromScore(score) {
@@ -101,12 +98,12 @@ export class Game {
     this.level = resetState.level;
 
     this.playerHitInvulnerabilitySeconds = 0;
-    this.enemyRespawnDelaySeconds = 0;
+    this.centipedeRespawnDelaySeconds = 0;
     this.player.resetPosition();
     this.projectiles.reset();
 
     this.applyDifficultyForLevel();
-    this.resetEnemy();
+    this.resetCentipede();
   }
 
   togglePause() {
@@ -153,21 +150,16 @@ export class Game {
     this.projectiles.update(dt);
     this.updateLevelProgression();
 
-    if (this.enemyRespawnDelaySeconds > 0) {
-      this.enemyRespawnDelaySeconds = Math.max(0, this.enemyRespawnDelaySeconds - dt);
-      if (this.enemyRespawnDelaySeconds === 0) {
-        this.resetEnemy();
+    if (this.centipedeRespawnDelaySeconds > 0) {
+      this.centipedeRespawnDelaySeconds = Math.max(0, this.centipedeRespawnDelaySeconds - dt);
+      if (this.centipedeRespawnDelaySeconds === 0) {
+        this.resetCentipede();
       }
-    } else if (this.enemy) {
-      this.enemy.y += this.enemy.speed * dt;
-      if (this.enemy.y > this.fieldHeight + 20) {
-        this.resetEnemy();
-        this.input.endFrame();
-        return;
-      }
+    } else if (this.centipede) {
+      updateCentipede(this.centipede, dt, this.fieldWidth, this.fieldHeight);
 
-      const projectileHits = this.projectiles.consumeHits(this.enemy);
-      if (projectileHits > 0) {
+      const hitResult = consumeSegmentHits(this.centipede, this.projectiles);
+      if (hitResult.destroyedSegments > 0) {
         const state = applyProjectileHits(
           {
             score: this.score,
@@ -177,20 +169,23 @@ export class Game {
             level: this.level,
             pointsPerLevel: this.pointsPerLevel
           },
-          projectileHits,
+          hitResult.destroyedSegments,
           100
         );
         this.score = state.score;
         this.level = state.level;
         this.applyDifficultyForLevel();
-        this.enemy = null;
-        this.enemyRespawnDelaySeconds = this.enemyDefeatRespawnDelaySeconds;
+
+        if (this.centipede.segments.length === 0) {
+          this.centipede = null;
+          this.centipedeRespawnDelaySeconds = this.enemyDefeatRespawnDelaySeconds;
+        }
       }
 
       if (
-        this.enemy &&
+        this.centipede &&
         this.playerHitInvulnerabilitySeconds === 0 &&
-        this.intersects(this.player.getBounds(), this.enemy)
+        intersectsCentipede(this.centipede, this.player.getBounds())
       ) {
         const state = applyPlayerHit({
           score: this.score,
@@ -204,8 +199,8 @@ export class Game {
         this.isGameOver = state.isGameOver;
         this.player.resetPosition();
         this.playerHitInvulnerabilitySeconds = 1.0;
-        this.enemyRespawnDelaySeconds = 0.75;
-        this.enemy = null;
+        this.centipedeRespawnDelaySeconds = 0.75;
+        this.centipede = null;
       }
     }
 
@@ -220,7 +215,7 @@ export class Game {
     this.drawPlayRegion(ctx);
     this.player.draw(ctx);
     this.projectiles.draw(ctx);
-    this.drawEnemy(ctx);
+    this.drawCentipede(ctx);
     this.drawHud(ctx);
 
     if (this.isPaused) {
@@ -255,29 +250,35 @@ export class Game {
     ctx.fillText(`Level: ${this.level}`, 12, 90);
     ctx.fillText(`Next Level: ${this.pointsPerLevel * this.level}`, 12, 112);
     ctx.fillText(`Projectiles: ${this.projectiles.count()}`, 12, 134);
-    ctx.fillText(`Shots Fired: ${this.shotsFired}`, 12, 156);
+    const segmentCount = this.centipede ? this.centipede.segments.length : 0;
+    ctx.fillText(`Segments: ${segmentCount}`, 12, 156);
+    ctx.fillText(`Shots Fired: ${this.shotsFired}`, 12, 178);
 
     ctx.fillStyle = this.isPaused ? "#fbbf24" : "#34d399";
     if (this.isGameOver) {
       ctx.fillStyle = "#f87171";
-      ctx.fillText("Status: Game Over", 12, 178);
+      ctx.fillText("Status: Game Over", 12, 200);
       return;
     }
 
-    ctx.fillText(this.isPaused ? "Status: Paused" : "Status: Running", 12, 178);
+    ctx.fillText(this.isPaused ? "Status: Paused" : "Status: Running", 12, 200);
   }
 
-  drawEnemy(ctx) {
-    if (!this.enemy) {
+  drawCentipede(ctx) {
+    if (!this.centipede) {
       return;
     }
 
-    ctx.fillStyle = "#f97316";
-    ctx.fillRect(this.enemy.x, this.enemy.y, this.enemy.width, this.enemy.height);
+    for (let i = 0; i < this.centipede.segments.length; i += 1) {
+      const segment = this.centipede.segments[i];
+      const isHead = i === 0;
+      ctx.fillStyle = isHead ? "#ef4444" : "#f97316";
+      ctx.fillRect(segment.x, segment.y, segment.width, segment.height);
 
-    ctx.strokeStyle = "#fed7aa";
-    ctx.lineWidth = 1;
-    ctx.strokeRect(this.enemy.x, this.enemy.y, this.enemy.width, this.enemy.height);
+      ctx.strokeStyle = "#fed7aa";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(segment.x, segment.y, segment.width, segment.height);
+    }
   }
 
   drawPauseOverlay(ctx) {
