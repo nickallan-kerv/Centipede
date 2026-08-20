@@ -5,7 +5,11 @@ import { ProjectileSystem } from "./projectiles.js";
 export class Game {
   constructor(canvas) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("2D canvas context is unavailable.");
+    }
+    this.ctx = ctx;
 
     this.fieldWidth = canvas.width;
     this.fieldHeight = canvas.height;
