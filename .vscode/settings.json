@@ -1,0 +1,10 @@
+{
+  "workbench.colorTheme": "Monokai",
+  "window.title": "Centipede Workspace - ${activeEditorShort}${separator}${rootName}",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#0b5f3a",
+    "titleBar.activeForeground": "#ffffff",
+    "statusBar.background": "#0b5f3a",
+    "statusBar.foreground": "#ffffff"
+  }
+}
