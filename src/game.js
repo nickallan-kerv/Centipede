@@ -14,9 +14,17 @@ import {
   intersectsCentipede,
   updateCentipede
 } from "./centipede-system.js";
+import {
+  consumeMushroomHits,
+  createMushroomState,
+  drawMushrooms,
+  getMushroomObstacles,
+  resetMushroomState,
+  spawnMushrooms
+} from "./mushroom-system.js";
 
 export class Game {
-  constructor(canvas) {
+  constructor(canvas, options = {}) {
     this.canvas = canvas;
     const ctx = canvas.getContext("2d");
     if (!ctx) {
@@ -26,6 +34,7 @@ export class Game {
 
     this.fieldWidth = canvas.width;
     this.fieldHeight = canvas.height;
+    this.randomFn = options.randomFn ?? Math.random;
 
     this.input = new InputController();
     this.player = new Player(this.fieldWidth, this.fieldHeight);
@@ -47,6 +56,13 @@ export class Game {
     this.centipede = this.createCentipede();
     this.centipedeRespawnDelaySeconds = 0;
     this.playerHitInvulnerabilitySeconds = 0;
+    this.mushrooms = createMushroomState(
+      this.fieldWidth,
+      this.fieldHeight,
+      this.player.playMinY,
+      this.randomFn,
+      26
+    );
 
     this.applyDifficultyForLevel();
   }
@@ -101,6 +117,7 @@ export class Game {
     this.centipedeRespawnDelaySeconds = 0;
     this.player.resetPosition();
     this.projectiles.reset();
+    resetMushroomState(this.mushrooms);
 
     this.applyDifficultyForLevel();
     this.resetCentipede();
@@ -148,6 +165,7 @@ export class Game {
     }
 
     this.projectiles.update(dt);
+    consumeMushroomHits(this.mushrooms, this.projectiles);
     this.updateLevelProgression();
 
     if (this.centipedeRespawnDelaySeconds > 0) {
@@ -156,10 +174,18 @@ export class Game {
         this.resetCentipede();
       }
     } else if (this.centipede) {
-      updateCentipede(this.centipede, dt, this.fieldWidth, this.fieldHeight);
+      updateCentipede(
+        this.centipede,
+        dt,
+        this.fieldWidth,
+        this.fieldHeight,
+        getMushroomObstacles(this.mushrooms)
+      );
 
       const hitResult = consumeSegmentHits(this.centipede, this.projectiles);
       if (hitResult.destroyedSegments > 0) {
+        spawnMushrooms(this.mushrooms, hitResult.spawnedMushrooms);
+
         const state = applyProjectileHits(
           {
             score: this.score,
@@ -213,6 +239,7 @@ export class Game {
     ctx.clearRect(0, 0, this.fieldWidth, this.fieldHeight);
 
     this.drawPlayRegion(ctx);
+    drawMushrooms(this.mushrooms, ctx);
     this.player.draw(ctx);
     this.projectiles.draw(ctx);
     this.drawCentipede(ctx);
@@ -252,16 +279,17 @@ export class Game {
     ctx.fillText(`Projectiles: ${this.projectiles.count()}`, 12, 134);
     const segmentCount = this.centipede ? this.centipede.segments.length : 0;
     ctx.fillText(`Segments: ${segmentCount}`, 12, 156);
-    ctx.fillText(`Shots Fired: ${this.shotsFired}`, 12, 178);
+    ctx.fillText(`Mushrooms: ${this.mushrooms.mushrooms.length}`, 12, 178);
+    ctx.fillText(`Shots Fired: ${this.shotsFired}`, 12, 200);
 
     ctx.fillStyle = this.isPaused ? "#fbbf24" : "#34d399";
     if (this.isGameOver) {
       ctx.fillStyle = "#f87171";
-      ctx.fillText("Status: Game Over", 12, 200);
+      ctx.fillText("Status: Game Over", 12, 222);
       return;
     }
 
-    ctx.fillText(this.isPaused ? "Status: Paused" : "Status: Running", 12, 200);
+    ctx.fillText(this.isPaused ? "Status: Paused" : "Status: Running", 12, 222);
   }
 
   drawCentipede(ctx) {
@@ -269,7 +297,23 @@ export class Game {
       return;
     }
 
-    for (let i = 0; i < this.centipede.segments.length; i += 1) {
+    if (Array.isArray(this.centipede.chains) && this.centipede.chains.length > 0) {
+      for (const chain of this.centipede.chains) {
+        for (let i = chain.segments.length - 1; i >= 0; i -= 1) {
+          const segment = chain.segments[i];
+          const isHead = i === 0;
+          ctx.fillStyle = isHead ? "#ef4444" : "#f97316";
+          ctx.fillRect(segment.x, segment.y, segment.width, segment.height);
+
+          ctx.strokeStyle = "#fed7aa";
+          ctx.lineWidth = 1;
+          ctx.strokeRect(segment.x, segment.y, segment.width, segment.height);
+        }
+      }
+      return;
+    }
+
+    for (let i = this.centipede.segments.length - 1; i >= 0; i -= 1) {
       const segment = this.centipede.segments[i];
       const isHead = i === 0;
       ctx.fillStyle = isHead ? "#ef4444" : "#f97316";

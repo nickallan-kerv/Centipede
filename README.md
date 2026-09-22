@@ -382,10 +382,19 @@ Initial placeholder:
 - ISSUE-32 implemented: [SOLID Refactor: Game Update Architecture](docs/sprints/sprint-4/ISSUE-32-solid-refactor-game-update-architecture.md)
 
 #### Sprint 5
-![Sprint Planning in Plan Mode](docs/Sprint Planning in Plan Mode.png)
 
 ##### Outcomes
 - ISSUE-401 implemented: [Centipede Segmented Movement Behavior](docs/sprints/sprint-5/ISSUE-401-centipede-segmented-movement-behavior.md)
+
+#### Sprint 6
+
+##### Outcomes
+- ISSUE-402 implemented: [Mushroom Obstacles and Interactions](docs/sprints/sprint-6/ISSUE-402-mushroom-obstacles-and-interactions.md)
+
+#### Sprint 7
+
+##### Outcomes
+- ISSUE-33 implemented: [Follow-the-Leader Centipede Chain Movement](docs/sprints/sprint-7/ISSUE-33-follow-the-leader-centipede-chain-movement.md)
 
 ## Appendix: Backlog Import Automation
 This repository includes a GitHub CLI automation script to create labels, milestones, and the initial issue backlog.
